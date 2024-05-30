@@ -3,9 +3,10 @@
   height: 100vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
   text-align: center;
-  font-size: 2.7vw;
+  font-size: 2.5vw;
 }
 
 .bg-video {
@@ -22,13 +23,14 @@
   background-color: rgba(0, 0, 0, 0.75);
   color: rgb(255, 255, 255);
   z-index: 5;
+  width: 95%;
 }
 
-.info>h1 {
+.info > h1 {
   margin-bottom: 30px;
 }
 
-.info>a {
+.info > a {
   padding: 15px;
   border-radius: 25px;
   color: black;
@@ -36,6 +38,43 @@
   background-color: rgba(255, 255, 255, 1);
 }
 
+.support {
+  padding: 15px;
+  border-radius: 25px;
+
+  max-width: 100vw;
+
+  position: fixed;
+  bottom: 50px;
+  left: 0;
+  transform: translate(calc(50vw - 50%));
+
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.35);
+  font-size: 3vw;
+  z-index: 5;
+}
+
+.support:first-child {
+  color: blue;
+}
+
+@media (min-width: 992px) {
+  .support > * {
+    margin-bottom: 3vh;
+    font-size: 2vw;
+  }
+}
+@media (max-width: 992px) {
+  .support > * {
+    margin-bottom: 2vh;
+    font-size: 4vw;
+  }
+}
+
+.support > *:hover {
+  cursor: pointer;
+}
 
 .press-start {
   font-family: "Press Start 2P", system-ui;
