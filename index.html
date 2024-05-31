@@ -6,21 +6,24 @@
     <title>БУНКЕР СТАСА</title>
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/main.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   </head>
   <body>
-    <div class="main press-start">
+    <div class="main STENGAZETA">
       <video src="media/bg.mp4" class="bg-video" muted autoplay loop></video>
+
+      <div class="timer">
+        <p>Прошло времени с последнего бана</p>
+        <p id="countdown"></p>
+      </div>
+
       <div class="info">
         <h1>АКТУАЛЬНАЯ ССЫЛКА НА БУНКЕР СТАСА</h1>
         <a href="https://t.me/bunkerstasa2">https://t.me/bunkerstasa2</a>
       </div>
       <div class="support">
         <h1 style="color: white">Поддержать админа</h1>
-        <p style="color: red" onclick="copyTon()">TON</p>
-        <p style="color: blue;"><a href="https://www.donationalerts.com/r/sasbunker">Donation Alerts</a></p>
+        <p style="color: red" onclick="copyTon()">Toncoin</p>
+        <p style="color: blue"><a href="https://www.donationalerts.com/r/sasbunker">Donation Alerts</a></p>
       </div>
     </div>
 
@@ -29,6 +32,36 @@
         navigator.clipboard.writeText("UQAKCFLttYdJwsSgK5bSSjdnUaS1ovqdCv4JnD7GGSs7VjN2");
         alert("Кошелек скопирован в буфер обмена!");
       }
+
+      function getTimeDiff(startDate, endDate) {
+        const diff = endDate - startDate;
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        const months = Math.floor(days / 30); // ~30
+        const years = Math.floor(days / 365); // ~365
+
+        return {
+          days: days,
+          hours: hours % 24,
+          minutes: minutes % 60,
+          seconds: seconds % 60,
+        };
+      }
+
+      const targetDate = new Date(2024, 4, 29, 21);
+      setInterval(() => {
+        let diff = getTimeDiff(targetDate, new Date());
+        document.getElementById(
+          "countdown"
+        ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+      }, 1000);
+
+      let diff = getTimeDiff(targetDate, new Date());
+        document.getElementById(
+          "countdown"
+        ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
     </script>
   </body>
 </html>
