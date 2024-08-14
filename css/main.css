@@ -103,8 +103,16 @@
 
 @media (max-width: 720px) {
   .support > * {
+
   }
   .main {
     font-size: 6vw;
   }
+}
+
+.disable-mp3 {
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.90)),
+    url("/media/winamp.webp") !important;
+  cursor: not-allowed;
 }
