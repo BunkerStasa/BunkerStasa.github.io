@@ -116,3 +116,7 @@
     url("/media/winamp.webp") !important;
   cursor: not-allowed;
 }
+
+.hidden {
+  display: none;
+}
