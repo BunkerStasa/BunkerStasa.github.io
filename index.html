@@ -58,7 +58,7 @@
       let offset = new Date().getTimezoneOffset();
       let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
       
-      const targetDate = new Date(2024, 9, 8, 16 + offsetHours);
+      const targetDate = new Date(2024, 9, 18, 16 + offsetHours);
       setInterval(() => {
         let diff = getTimeDiff(targetDate, new Date());
         document.getElementById(
