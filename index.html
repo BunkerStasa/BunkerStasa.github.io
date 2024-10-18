@@ -1,85 +1,113 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>БУНКЕР СТАСА</title>
     <link rel="stylesheet" href="css/reset.css" />
     <link rel="stylesheet" href="css/main.css" />
-  </head>
-  <body>
-    <div class="main STENGAZETA">
-      <video src="media/bg.mp4" class="bg-video" muted autoplay loop></video>
 
-      <div class="timer">
-        <p>Прошло времени с последнего бана</p>
-        <p id="countdown"></p>
-      </div>
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript">
+        (function (m, e, t, r, i, k, a) {
+            m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+            m[i].l = 1 * new Date();
+            for (var j = 0; j < document.scripts.length; j++) { if (document.scripts[j].src === r) { return; } }
+            k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+        })
+            (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-      <div class="info">
-        <h1>АКТУАЛЬНАЯ ССЫЛКА НА БУНКЕР СТАСА</h1>
-        <a class="bunker_link" referrerpolicy="no-referrer"  href="https://t.me/bunkerstasaZ1">БУНКЕР СТАСА</a>
-        <div class="type_links">
-          <a referrerpolicy="no-referrer" class="hidden" href="https://t.me/+YotwZ1QwAU40M2Ey">MP3</a>
-          <a referrerpolicy="no-referrer" href="https://t.me/+zHxFHSd2AS05ZDQy">240p</a>
-          <a referrerpolicy="no-referrer" href="https://t.me/+wN8XZJoN8VUyMzky">1080p</a>
-        </div>
-      </div>
-      <div class="support">
-        <h1 style="color: white">Поддержать админа</h1>
-        <p style="color: blue" onclick="copyTon()">Toncoin</p>
-        <p style="color: red"><a referrerpolicy="no-referrer"  href="https://www.donationalerts.com/r/sasbunker">Donation Alerts</a></p>
-      </div>
-    </div>
-
-    <script>
-      function copyTon() {
-        navigator.clipboard.writeText("UQAKCFLttYdJwsSgK5bSSjdnUaS1ovqdCv4JnD7GGSs7VjN2");
-        alert("Кошелек скопирован в буфер обмена!");
-      }
-
-      function getTimeDiff(startDate, endDate) {
-        const diff = endDate - startDate;
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-        const months = Math.floor(days / 30); // ~30
-        const years = Math.floor(days / 365); // ~365
-
-        return {
-          days: days,
-          hours: hours % 24,
-          minutes: minutes % 60,
-          seconds: seconds % 60,
-        };
-      }
-
-      let offset = new Date().getTimezoneOffset();
-      let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
-      
-      const targetDate = new Date(2024, 9, 18, 16 + offsetHours);
-      setInterval(() => {
-        let diff = getTimeDiff(targetDate, new Date());
-        document.getElementById(
-          "countdown"
-        ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
-      }, 1000);
-
-      let diff = getTimeDiff(targetDate, new Date());
-        document.getElementById(
-          "countdown"
-        ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+        ym(98672180, "init", {
+            clickmap: true,
+            trackLinks: true,
+            accurateTrackBounce: true
+        });
     </script>
-    
+    <noscript>
+        <div><img src="https://mc.yandex.ru/watch/98672180" style="position:absolute; left:-9999px;" alt="" /></div>
+    </noscript>
+    <!-- /Yandex.Metrika counter -->
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KVXNCP8H3E"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-KVXNCP8H3E');
-</script>
-  </body>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-KVXNCP8H3E');
+    </script>
+
+</head>
+
+<body>
+    <div class="main STENGAZETA">
+        <video src="media/bg.mp4" class="bg-video" muted autoplay loop></video>
+
+        <div class="timer">
+            <p>Прошло времени с последнего бана</p>
+            <p id="countdown"></p>
+        </div>
+
+        <div class="info">
+            <h1>АКТУАЛЬНАЯ ССЫЛКА НА БУНКЕР СТАСА</h1>
+            <a class="bunker_link" referrerpolicy="no-referrer" href="https://t.me/bunkerstasaZ1">БУНКЕР СТАСА</a>
+            <div class="type_links">
+                <a referrerpolicy="no-referrer" class="hidden" href="https://t.me/+YotwZ1QwAU40M2Ey">MP3</a>
+                <a referrerpolicy="no-referrer" href="https://t.me/+zHxFHSd2AS05ZDQy">240p</a>
+                <a referrerpolicy="no-referrer" href="https://t.me/+wN8XZJoN8VUyMzky">1080p</a>
+            </div>
+        </div>
+        <div class="support">
+            <h1 style="color: white">Поддержать админа</h1>
+            <p style="color: blue" onclick="copyTon()">Toncoin</p>
+            <p style="color: red"><a referrerpolicy="no-referrer"
+                    href="https://www.donationalerts.com/r/sasbunker">Donation Alerts</a></p>
+        </div>
+    </div>
+
+    <script>
+        function copyTon() {
+            navigator.clipboard.writeText("UQAKCFLttYdJwsSgK5bSSjdnUaS1ovqdCv4JnD7GGSs7VjN2");
+            alert("Кошелек скопирован в буфер обмена!");
+        }
+
+        function getTimeDiff(startDate, endDate) {
+            const diff = endDate - startDate;
+            const seconds = Math.floor(diff / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            const months = Math.floor(days / 30);
+            const years = Math.floor(days / 365); 
+
+            return {
+                days: days,
+                hours: hours % 24,
+                minutes: minutes % 60,
+                seconds: seconds % 60,
+            };
+        }
+
+        let offset = new Date().getTimezoneOffset();
+        let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
+
+        const targetDate = new Date(2024, 9, 18, 16 + offsetHours);
+        setInterval(() => {
+            let diff = getTimeDiff(targetDate, new Date());
+            document.getElementById(
+                "countdown"
+            ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+        }, 1000);
+
+        let diff = getTimeDiff(targetDate, new Date());
+        document.getElementById(
+            "countdown"
+        ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+    </script>
+
+
+</body>
+
 </html>
