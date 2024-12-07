@@ -99,8 +99,11 @@
   border-radius: 15px;
   background-color: rgba(0, 0, 0, 0.75);
   color: white;
+  max-width: 80vw;
 }
-
+#banned_video {
+  max-width: 70vw;
+}
 @media (max-width: 720px) {
   .support > * {
 

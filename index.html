@@ -41,13 +41,18 @@
 
 </head>
 
-<body>
+<body id="body">
     <div class="main STENGAZETA">
         <video src="media/bg.mp4" class="bg-video" muted autoplay loop></video>
 
         <div class="timer">
-            <p>Прошло времени с последнего бана</p>
-            <p id="countdown"></p>
+            <div id="timer" class="hidden">
+                <p>Прошло времени с последнего бана</p>
+                <p id="countdown"></p>
+            </div>
+            <div id="isBanned" class="">
+                <video id="banned_video" src="media/video2.mp4" loop></video>
+            </div>
         </div>
 
         <div class="info">
@@ -55,8 +60,8 @@
             <a class="bunker_link" referrerpolicy="no-referrer" href="https://t.me/bunkerstasaZ3">БУНКЕР СТАСА</a>
             <div class="type_links">
                 <a referrerpolicy="no-referrer" class="hidden" href="">MP3</a>
-                <a referrerpolicy="no-referrer" href="https://t.me/+8jNgmoG_asQ1MjMy">240p</a>
-                <a referrerpolicy="no-referrer" href="https://t.me/+sq_RKosG3-wzNWJi">1080p</a>
+                <a referrerpolicy="no-referrer" href="https://t.me/+zP5vgOnyrHZiYjQy">240p</a>
+                <a referrerpolicy="no-referrer" href="https://t.me/+qCrIUvZScEtlM2Ri">1080p</a>
             </div>
         </div>
         <div class="support">
@@ -105,6 +110,13 @@
         document.getElementById(
             "countdown"
         ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+        
+        body.addEventListener('click', () => {
+            document.getElementById('banned_video').volume=0.45
+            document.getElementById('banned_video').play()
+            
+        })
+        
     </script>
 
 
