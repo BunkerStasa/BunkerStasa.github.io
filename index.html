@@ -50,9 +50,11 @@
                 <p>Прошло времени с последнего бана</p>
                 <p id="countdown"></p>
             </div>
+            <!--
             <div id="isBanned" class="hidden">
                 <video id="banned_video" src="media/video2.mp4" loop></video>
             </div>
+            -->
         </div>
 
         <div class="info">
@@ -110,12 +112,13 @@
         document.getElementById(
             "countdown"
         ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
-        
+
+        /*
         body.addEventListener('click', () => {
             document.getElementById('banned_video').volume=0.45
             document.getElementById('banned_video').play()
             
-        })
+        })*/
         
     </script>
 
