@@ -46,15 +46,15 @@
         <video src="media/bg.mp4" class="bg-video" muted autoplay loop></video>
 
         <div class="timer">
-            <div id="timer" class="">
+            <div id="timer" class="hidden">
                 <p>Прошло времени с последнего бана</p>
                 <p id="countdown"></p>
             </div>
-            <!--
-            <div id="isBanned" class="hidden">
+            
+            <div id="isBanned" class="">
                 <video id="banned_video" src="media/video2.mp4" loop></video>
             </div>
-            -->
+            
         </div>
 
         <div class="info">
@@ -62,8 +62,8 @@
             <a class="bunker_link" referrerpolicy="no-referrer" href="https://t.me/bunkerstasaZ4">БУНКЕР СТАСА</a>
             <div class="type_links">
                 <a referrerpolicy="no-referrer" class="hidden" href="">MP3</a>
-                <a referrerpolicy="no-referrer" href="https://t.me/+zP5vgOnyrHZiYjQy">240p</a>
-                <a referrerpolicy="no-referrer" href="https://t.me/+qCrIUvZScEtlM2Ri">1080p</a>
+                <a referrerpolicy="no-referrer" href="">240p</a>
+                <a referrerpolicy="no-referrer" href="">1080p</a>
             </div>
         </div>
         <div class="support">
@@ -100,7 +100,7 @@
         let offset = new Date().getTimezoneOffset();
         let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
 
-        const targetDate = new Date(2024, 11, 7, 10 + offsetHours);
+        const targetDate = new Date(2025, 0, 8, 13 + offsetHours);
         setInterval(() => {
             let diff = getTimeDiff(targetDate, new Date());
             document.getElementById(
