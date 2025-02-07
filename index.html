@@ -46,12 +46,12 @@
         <video src="media/bg.mp4" class="bg-video" muted autoplay loop></video>
 
         <div class="timer">
-            <div id="timer" class="">
+            <div id="timer" class="hidden">
                 <p>Прошло времени с последнего бана</p>
                 <p id="countdown"></p>
             </div>
             
-            <div id="isBanned" class="hidden">
+            <div id="isBanned" class="">
                 <video id="banned_video" src="media/video2.mp4" muted autoplay loop></video>
             </div>
             
@@ -100,7 +100,7 @@
         let offset = new Date().getTimezoneOffset();
         let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
 
-        const targetDate = new Date(2025, 0, 8, 13 + offsetHours);
+        const targetDate = new Date(2025, 1, 7, 3 + offsetHours);
         setInterval(() => {
             let diff = getTimeDiff(targetDate, new Date());
             document.getElementById(
