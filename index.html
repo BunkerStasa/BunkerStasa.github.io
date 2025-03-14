@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>БУНКЕР СТАСА</title>
     <link rel="stylesheet" href="css/reset.css" />
-    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/main.v2.css" />
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
@@ -43,18 +43,19 @@
 
 <body id="body">
     <div class="main STENGAZETA">
-        <video src="media/bg.mp4" class="bg-video" muted autoplay loop></video>
+        <video src="media/bg.mp4" class="bg-video" id="bg-video_1" muted autoplay loop></video>
+        <video src="media/bg_new.mp4" class="bg-video hidden" id="bg-video_2"></video>
 
         <div class="timer">
             <div id="timer" class="">
                 <p>Прошло времени с последнего бана</p>
                 <p id="countdown"></p>
             </div>
-            
+
             <div id="isBanned" class="hidden">
                 <video id="banned_video" src="media/video2.mp4" muted autoplay loop></video>
             </div>
-            
+
         </div>
 
         <div class="info">
@@ -72,6 +73,10 @@
             <p style="color: red"><a referrerpolicy="no-referrer"
                     href="https://www.donationalerts.com/r/sasbunker">Donation Alerts</a></p>
         </div>
+        <footer class="footer">
+            <div>Made by<br>"КАКИЕ-ТО ДОЛБАЁБЫ"</div>
+            <img id="soundOn" src="media/soundOn.png" onclick="soundOn()">
+        </footer>
     </div>
 
     <script>
@@ -87,7 +92,7 @@
             const hours = Math.floor(minutes / 60);
             const days = Math.floor(hours / 24);
             const months = Math.floor(days / 30);
-            const years = Math.floor(days / 365); 
+            const years = Math.floor(days / 365);
 
             return {
                 days: days,
@@ -113,13 +118,33 @@
             "countdown"
         ).innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
 
+        function soundOn() {
+            console.log('включить саунд епты')
+            const btn = document.getElementById("soundOn")
+            btn.classList.add('hidden')
+            const bg_video = document.getElementById("bg-video_1")
+            bg_video.classList.add('hidden')
+
+            const video = document.getElementById("bg-video_2")
+            video.classList.remove('hidden')
+            video.volume = 0.5
+            video.play()
+
+
+            setTimeout(() => {
+                video.classList.add('hidden')
+                bg_video.classList.remove('hidden')
+                btn.classList.remove('hidden')
+            }, 10300)
+
+        }
         /*
         body.addEventListener('click', () => {
             document.getElementById('banned_video').volume=0.45
             document.getElementById('banned_video').play()
             
         })*/
-        
+
     </script>
 
 </body>
