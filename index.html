@@ -70,8 +70,9 @@
       </div>
 
       <div class="info ">
-        <h1>КАНАЛ В БАНЕ, АДМИН В ЗАПОЕ. ПРОТРЕЗВЕЕТ ЗАКИНЕТ ССЫЛКИ.</h1>
+        <h1>ПОКА АДМИН ГРУЗАНЁТ ССЫЛКИ ПРЕДЛАГАЮ КРУТОЙ ПАБЛИК</h1>
         <a class="bunker_link hidden" referrerpolicy="no-referrer" href="https://t.me/bunkersz10">БУНКЕР СТАСА</a>
+        <a class="bunker_link" referrerpolicy="no-referrer" href="https://t.me/denandhisfriends">ЩИТПОСТ</a>
         <div class="type_links hidden">
           <a referrerpolicy="no-referrer" class="hidden" href="">MP3</a>
           <a referrerpolicy="no-referrer" class="" href="https://t.me/+oPdcbrl71OkzYWYy">240p</a>
@@ -115,7 +116,7 @@
       let offset = new Date().getTimezoneOffset();
       let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
 
-      const targetDate = new Date(2025, 4, 12, 16 + offsetHours);
+      const targetDate = new Date(2025, 4, 12, 16 + offsetHours); // месяц с нуля
       setInterval(() => {
         let diff = getTimeDiff(targetDate, new Date());
         document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
@@ -125,7 +126,6 @@
       document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
 
       function soundOn() {
-        console.log("включить саунд епты");
         const btn = document.getElementById("soundOn");
         btn.classList.add("hidden");
         const bg_video = document.getElementById("bg-video_1");
@@ -142,12 +142,6 @@
           btn.classList.remove("hidden");
         });
       }
-      /*
-        body.addEventListener('click', () => {
-            document.getElementById('banned_video').volume=0.45
-            document.getElementById('banned_video').play()
-            
-        })*/
     </script>
   </body>
 </html>
