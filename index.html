@@ -59,24 +59,24 @@
     <video src="media/bg_new.mp4" class="bg-video hidden" id="bg-video_2" preload="auto"></video>
     <main class="main STENGAZETA">
       <div class="timer">
-        <div id="timer" class="hidden">
+        <div id="timer" class="">
           <p>Прошло времени с последнего бана</p>
           <p id="countdown"></p>
         </div>
 
-        <div id="isBanned" class="">
+        <div id="isBanned" class="hidden">
           <video id="banned_video" src="media/video2.mp4" muted autoplay loop></video>
         </div>
       </div>
 
       <div class="info ">
-        <h1>ПОКА АДМИН ГРУЗАНЁТ ССЫЛКИ ПРЕДЛАГАЮ КРУТОЙ ПАБЛИК</h1>
-        <a class="bunker_link hidden" referrerpolicy="no-referrer" href="https://t.me/bunkersz10">БУНКЕР СТАСА</a>
-        <a class="bunker_link" referrerpolicy="no-referrer" href="https://t.me/denandhisfriends">ЩИТПОСТ</a>
+        <h1>АКТУАЛЬНАЯ ССЫЛКА НА БУНКЕР</h1>
+        <a class="bunker_link" referrerpolicy="no-referrer" href="https://t.me/bunkersz11">БУНКЕР СТАСА</a>
+        <a class="bunker_link hidden" referrerpolicy="no-referrer" href="https://t.me/denandhisfriends">ЩИТПОСТ</a>
         <div class="type_links hidden">
           <a referrerpolicy="no-referrer" class="hidden" href="">MP3</a>
-          <a referrerpolicy="no-referrer" class="" href="https://t.me/+oPdcbrl71OkzYWYy">240p</a>
-          <a referrerpolicy="no-referrer" class="" href="https://t.me/+wU09378uf5o2NGEy">1080p</a>
+          <a referrerpolicy="no-referrer" class="" href="https://t.me/+GhlHgAcyXKwwY2Vi">240p</a>
+          <a referrerpolicy="no-referrer" class="" href="https://t.me/+x5E0D7jmHQ9hZDQy">1080p</a>
         </div>
       </div>
       <div class="support">
@@ -116,7 +116,7 @@
       let offset = new Date().getTimezoneOffset();
       let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
 
-      const targetDate = new Date(2025, 4, 12, 16 + offsetHours); // месяц с нуля
+      const targetDate = new Date(2025, 4, 14, 6 + offsetHours); // месяц с нуля
       setInterval(() => {
         let diff = getTimeDiff(targetDate, new Date());
         document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
