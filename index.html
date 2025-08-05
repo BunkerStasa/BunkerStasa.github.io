@@ -118,9 +118,9 @@
 
       const targetDate = new Date(2025, 8, 5, 19 + offsetHours); // месяц с нуля
       setInterval(() => {
-        let diff = getTimeDiff(targetDate, new Date());
-        document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
-      }, 1000);
+    let diff = getTimeDiff(targetDate, new Date());
+    document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+}, 1000);
 
       let diff = getTimeDiff(targetDate, new Date());
       document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
@@ -145,5 +145,6 @@
     </script>
   </body>
 </html>
+
 
 
