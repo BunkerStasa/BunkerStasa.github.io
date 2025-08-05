@@ -116,7 +116,7 @@
       let offset = new Date().getTimezoneOffset();
       let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
 
-      const targetDate = new Date(2025, 8, 05, 19 + offsetHours); // месяц с нуля
+      const targetDate = new Date(2025, 7, 5, 19 + offsetHours); // месяц с нуля
       setInterval(() => {
     let diff = getTimeDiff(targetDate, new Date());
     document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
@@ -145,6 +145,7 @@
     </script>
   </body>
 </html>
+
 
 
 
