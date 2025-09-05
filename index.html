@@ -102,8 +102,6 @@
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
         const days = Math.floor(hours / 24);
-        const months = Math.floor(days / 30);
-        const years = Math.floor(days / 365);
 
         return {
           days: days,
@@ -113,17 +111,20 @@
         };
       }
 
-      let offset = new Date().getTimezoneOffset();
-      let offsetHours = -(offset / 60); // Преобразуем в часы и меняем знак на противоположный
+      // Стартовая дата/время последнего бана: 08.09.2025 00:26
+      const targetDate = new Date(2025, 8, 8, 0, 26, 0); // год, месяц(0=янв), день, часы, минуты, секунды
 
-      const targetDate = new Date(2025, 7, 8, 15 + offsetHours); // ГОД / МЕСЯЦ - 1!!! / ДЕНЬ / ВРЕМЯ ПО UTC+0
       setInterval(() => {
-    let diff = getTimeDiff(targetDate, new Date());
-    document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
-}, 1000);
+        let diff = getTimeDiff(targetDate, new Date());
+        document.getElementById("countdown").innerText =
+          `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+      }, 1000);
 
+      // Мгновенное начальное обновление
       let diff = getTimeDiff(targetDate, new Date());
-      document.getElementById("countdown").innerText = `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+      document.getElementById("countdown").innerText =
+        `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
+      // === конец блока изменения таймера ===
 
       function soundOn() {
         const btn = document.getElementById("soundOn");
@@ -145,14 +146,3 @@
     </script>
   </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
