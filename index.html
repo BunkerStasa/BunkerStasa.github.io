@@ -75,8 +75,8 @@
         <a class="bunker_link hidden" referrerpolicy="no-referrer" href="https://t.me/denandhisfriends">ЩИТПОСТ</a>
         <div class="type_links">
           <a referrerpolicy="no-referrer" class="hidden" href="">MP3</a>
-          <a referrerpolicy="no-referrer" class="" href="https://t.me/+z1xO_UOurW02NGIy">240p</a>
-          <a referrerpolicy="no-referrer" class="" href="https://t.me/+GfHNWSzYKOAwNTA6">1080p</a>
+          <a referrerpolicy="no-referrer" class="" href="https://t.me/+z1xO_UOurW02NGIy">240п</a>
+          <a referrerpolicy="no-referrer" class="" href="https://t.me/+GfHNWSzYKOAwNTA6">1080п</a>
         </div>
       </div>
       <div class="support">
@@ -97,34 +97,31 @@
       }
 
       function getTimeDiff(startDate, endDate) {
-        const diff = endDate - startDate;
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
-
-        return {
-          days: days,
-          hours: hours % 24,
-          minutes: minutes % 60,
-          seconds: seconds % 60,
-        };
+        // не даём уйти в минус даже при странностях с часовыми поясами/часами пользователя
+        const diff = Math.max(0, endDate - startDate);
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return { days, hours, minutes, seconds };
       }
 
-      // Стартовая дата/время последнего бана: 08.09.2025 00:26
-      const targetDate = new Date(2025, 8, 8, 0, 26, 0); // год, месяц(0=янв), день, часы, минуты, секунды
+      // === таймер ===
+      // Локальная стартовая дата/время последнего бана: 08.09.2025 00:26
+      const targetDate = new Date(2025, 8, 8, 0, 26, 0);
+      // Альтернатива, если нужно зафиксировать конкретный пояс (пример: Москва, UTC+03:00):
+      // const targetDate = new Date("2025-09-08T00:26:00+03:00");
 
-      setInterval(() => {
-        let diff = getTimeDiff(targetDate, new Date());
+      function render() {
+        const diff = getTimeDiff(targetDate, new Date());
         document.getElementById("countdown").innerText =
           `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
-      }, 1000);
+      }
 
-      // Мгновенное начальное обновление
-      let diff = getTimeDiff(targetDate, new Date());
-      document.getElementById("countdown").innerText =
-        `Дней: ${diff.days}, часов: ${diff.hours}, минут: ${diff.minutes}, секунд: ${diff.seconds}`;
-      // === конец блока изменения таймера ===
+      render(); // начальный вывод
+      setInterval(render, 1000);
+      // === конец таймера ===
 
       function soundOn() {
         const btn = document.getElementById("soundOn");
