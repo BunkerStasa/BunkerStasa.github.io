@@ -1,61 +1,1852 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>Список видео — обработка</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>База роликов — Бункер Стаса</title>
+
+    <link rel="stylesheet" href="css/reset.css" />
+
     <style>
+        :root {
+            --accent: #ff5c39;
+            --accent-soft: rgba(255, 92, 57, 0.12);
+            --bg: #f3f4f7;
+            --bg-card: #ffffff;
+            --text-main: #14151a;
+            --text-muted: #70727d;
+            --border-soft: #e1e3ea;
+            --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.12);
+            --radius-lg: 18px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 0;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #050505;
-            color: #f5f5f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #ffffff, #e4e7f0);
+            color: var(--text-main);
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        .page {
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .processing-wrapper {
-            text-align: center;
+        /* HEADER */
+
+        .page-header {
+            padding: 24px 16px 12px;
         }
 
-        .processing-title {
-            font-size: 42px;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            margin-bottom: 24px;
-        }
-
-        .processing-subtitle {
-            font-size: 16px;
-            opacity: 0.7;
-            margin-bottom: 32px;
-        }
-
-        .spinner {
-            width: 64px;
-            height: 64px;
-            border: 6px solid rgba(255, 255, 255, 0.12);
-            border-top-color: #ffffff;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .container {
+            width: 100%;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
+        .title-block {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            padding: 18px 22px 16px;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .title-block h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+        }
+
+        .title-block > p {
+            margin: 0 0 6px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .guide-list {
+            margin: 8px 0 0;
+            padding-left: 18px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.45;
+        }
+
+        .guide-list li + li {
+            margin-top: 4px;
+        }
+
+        /* ФИЛЬТРЫ */
+
+        .filters-section {
+            padding: 10px 16px 0;
+        }
+
+        .filters-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-soft);
+            padding: 16px 20px 18px;
+        }
+
+        .filters-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filters-card-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .filters-reset {
+            font-size: 13px;
+            border: none;
+            background: transparent;
+            color: var(--accent);
+            cursor: pointer;
+            padding: 4px 0;
+        }
+
+        .copy-status {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .copy-status.highlight {
+            color: var(--accent);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .filter-select,
+        .filter-input {
+            width: 100%;
+            padding: 8px 11px;
+            border-radius: 999px;
+            border: 1px solid var(--border-soft);
+            font-size: 13px;
+            outline: none;
+            background: #f9fafb;
+            transition: border-color 0.15s ease,
+                        box-shadow 0.15s ease,
+                        background 0.15s ease;
+        }
+
+        .filter-select:focus,
+        .filter-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+            background: #ffffff;
+        }
+
+        /* ТАБЛИЦЫ */
+
+        .tables-section {
+            padding: 18px 16px 30px;
+            flex: 1;
+        }
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .table-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            display: flex;
+            flex-direction: column;
+            min-height: 220px;
+        }
+
+        .table-card-header {
+            padding: 14px 18px 10px;
+            border-bottom: 1px solid var(--border-soft);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-title {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .table-meta {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .table-wrapper {
+    flex: 1;
+    max-height: 520px;     
+    overflow-y: auto;       
+    overflow-x: hidden; 
+}
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background: #f9fafb;
+            z-index: 1;
+        }
+
+        th,
+        td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #edf0f4;
+        }
+
+        th {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            background: #f9fafb;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #fcfdff;
+        }
+
+        tbody tr:hover {
+            background: #fff7f4;
+        }
+
+        .col-id {
+            width: 70px;
+            white-space: nowrap;
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--accent);
+            text-decoration: underline dotted transparent;
+            transition: text-decoration-color 0.15s ease;
+        }
+
+        .col-id:hover {
+            text-decoration-color: var(--accent);
+        }
+
+        .col-tags {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        /* НИЗ СТРАНИЦЫ */
+
+        .footer {
+            padding: 0 16px 26px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 16px;
+            border-radius: 999px;
+            background: #ffffff;
+            border: 1px solid var(--border-soft);
+            font-size: 13px;
+            color: var(--text-main);
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(148, 163, 184, 0.35);
+            transition: transform 0.12s ease,
+                        box-shadow 0.12s ease,
+                        background 0.12s ease;
+        }
+
+        .back-btn span {
+            font-size: 16px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-1px);
+            background: #fef2f2;
+            box-shadow: 0 16px 30px rgba(248, 113, 113, 0.35);
+        }
+
+        .back-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 8px 16px rgba(148, 163, 184, 0.45);
+        }
+
+
+        .table-toggle {
+    width: 100%;
+    padding: 14px 20px;
+    background: #ffffff;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: left;
+    transition: background 0.15s ease, transform 0.15s ease;
+    margin-bottom: 10px;
+}
+
+.table-toggle:hover {
+    background: #fff5f2;
+}
+
+.table-toggle.open {
+    background: #ffe9e3;
+}
+
+.table-content {
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: max-height .35s ease, opacity .35s ease;
+}
+
+.table-content.open {
+    max-height: 2000px; /* достаточно для любой таблицы */
+    opacity: 1;
+}
+
+        /* АДАПТИВ */
+
+        @media (max-width: 900px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tables-section {
+                padding-bottom: 20px;
+            }
+
+            .title-block h1 {
+                font-size: 22px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="processing-wrapper">
-        <div class="processing-title">ИДЁТ ОБРАБОТКА</div>
-        <div class="processing-subtitle">Страница временно недоступна. Данные загружаются… Джоджикам не паниковать!</div>
-        <div class="spinner"></div>
-    </div>
+<div class="page">
+    <!-- Заголовок -->
+    <header class="page-header">
+        <div class="container">
+            <div class="title-block">
+                <h1>База роликов «Бункер Стаса»</h1>
+                <p>Страница для поиска нужных роликов из архива</p>
+                <ul class="guide-list">
+                    <li>Выберите нужные <strong>категории</strong> и/или <strong>feat</strong> сверху, при необходимости используйте поиск.</li>
+                    <li>Найдите нужный ролик в таблице 240p или 1080p.</li>
+                    <li>Кликните по его <strong>ID</strong> — он автоматически скопируется в буфер обмена.</li>
+                    <li>Вставьте скопированный ID в поиск соответствующего канала ТГ.</li>
+                </ul>
+            </div>
+        </div>
+    </header>
+
+    <!-- Фильтры -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters-card">
+                <div class="filters-card-header">
+                    <div class="filters-card-title">Фильтры</div>
+                    <button class="filters-reset" type="button" id="filters-reset">
+                        Сбросить фильтры
+                    </button>
+                </div>
+
+                <div id="copy-status" class="copy-status">
+                    Подсказка: клик по ID ролика скопирует его в буфер обмена.
+                </div>
+
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="filter-category">Категория</label>
+                        <select id="filter-category" class="filter-select">
+                            <option value="all">Все категории</option>
+                            <!-- ВСЕ КАТЕГОРИИ -->
+                            <option value="#CoffeBreak">#CoffeBreak</option>
+                            <option value="#Bosty_News">#Bosty_News</option>
+                            <option value="#Стас_Комментатор">#Стас_Комментатор</option>
+                            <option value="#Вперёд_Ногами">#Вперёд_Ногами</option>
+                            <option value="#Bosty_Blog">#Bosty_Blog</option>
+                            <option value="#Stream_Стаса">#Stream_Стаса</option>
+                            <option value="#Донбасский_дневник_Послесловие_Часть1">#Донбасский_дневник_Послесловие_Часть1</option>
+                            <option value="#Донбасский_дневник_Послесловие_Часть2">#Донбасский_дневник_Послесловие_Часть2</option>
+                            <option value="#Подкаст">#Подкаст</option>
+                            <option value="#Подкаст_Link">#Подкаст_Link</option>
+                            <option value="#Ответы_на_вопросы">#Ответы_на_вопросы</option>
+                            <option value="#ЧЗП">#ЧЗП</option>
+                            <option value="#Стас_Live">#Стас_Live</option>
+                            <option value="#Разбор_Фильма">#Разбор_Фильма</option>
+                            <option value="#Алогритм">#Алогритм</option>
+                            <option value="#Музыка">#Музыка</option>
+                            <option value="#Вечерняя_Русофобия">#Вечерняя_Русофобия</option>
+                            <option value="#Стас_Другое">#Стас_Другое</option>
+                            <option value="#Прочее">#Прочее</option>
+                            <option value="#Разбор_MaxPower">#Разбор_MaxPower</option>
+                            <option value="#Ответка">#Ответка</option>
+                            <option value="#ИнфоРолик">#ИнфоРолик</option>
+                            <option value="#Реакция">#Реакция</option>
+                            <option value="#Wylsa_zapizdilsya">#Wylsa_zapizdilsya</option>
+                            <option value="#Обзор_Фильма">#Обзор_Фильма</option>
+                            <option value="#Детектор_Лжи_с_Соколовским">#Детектор_Лжи_с_Соколовским</option>
+                            <option value="#Клип">#Клип</option>
+                            <option value="#Стас_Политолох">#Стас_Политолох</option>
+                            <option value="#Стас_Киносмотр">#Стас_Киносмотр</option>
+                            <option value="#ikinostas">#ikinostas</option>
+                            <option value="#ПО_FUCK_ТАМ">#ПО_FUCK_ТАМ</option>
+                            <option value="#ТЕХНОБЛОГ">#ТЕХНОБЛОГ</option>
+                            <option value="#Разбор_какой_то_Онлифанщицы">#Разбор_какой_то_Онлифанщицы</option>
+                            <option value="#Штребунал">#Штребунал</option>
+                            <option value="#Триппер">#Триппер</option>
+                            <option value="#Metro">#Metro</option>
+                            <option value="#Контентология">#Контентология</option>
+                            <option value="#Стас_Бомбит">#Стас_Бомбит</option>
+                            <option value="#Обзоры_С_Бусти_Джека">#Обзоры_С_Бусти_Джека</option>
+                            <option value="#Пост_с_бусти_Джека">#Пост_с_бусти_Джека</option>
+                            <option value="#Джек_Комментатор">#Джек_Комментатор</option>
+                            <option value="#База_о_Культуре">#База_о_Культуре</option>
+                            <option value="#Бекстейдж_Джек">#Бекстейдж_Джек</option>
+                            <option value="#Другое_Джек">#Другое_Джек</option>
+                            <option value="#Podcast_For_Bunker">#Podcast_For_Bunker</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-feat">Feat</label>
+                        <select id="filter-feat" class="filter-select">
+                            <option value="all">Все feat</option>
+                           
+                            <!-- ВСЕ FEAT -->
+                            <option value="#Feat_Стас">#Feat_Стас</option>
+                            <option value="#Feat_Джек">#Feat_Джек</option>
+                            <option value="#Feat_Joe">#Feat_Joe</option>
+                            <option value="#Feat_Sorabi">#Feat_Sorabi</option>
+                            <option value="#Feat_Антонов">#Feat_Антонов</option>
+                            <option value="#Feat_Соловьев">#Feat_Соловьев</option>
+                            <option value="#Feat_Оляша">#Feat_Оляша</option>
+                            <option value="#Feat_grpzdc">#Feat_grpzdc</option>
+                            <option value="#Feat_Woman">#Feat_Woman</option>
+                            <option value="#Feat_WomanX2">#Feat_WomanX2</option>
+                            <option value="#Feat_Ксюша">#Feat_Ксюша</option>
+                            <option value="#Feat_Женя">#Feat_Женя</option>
+                            <option value="#Feat_CMH">#Feat_CMH</option>
+                            <option value="#Feat_Темур_Сидельников">#Feat_Темур_Сидельников</option>
+                            <option value="#Feat_Жмиль">#Feat_Жмиль</option>
+                            <option value="#Feat_Random">#Feat_Random</option>
+                            <option value="#Feat_Neeby_kto_eto">#Feat_Neeby_kto_eto</option>
+                            <option value="#Feat_Мостов">#Feat_Мостов</option>
+                            <option value="#Feat_OldJoe">#Feat_OldJoe</option>
+                            <option value="#Feat_TrapSlonyra">#Feat_TrapSlonyra</option>
+                            <option value="#Feat_Полина">#Feat_Полина</option>
+                            <option value="#Feat_Швец">#Feat_Швец</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="filter-search">Поиск по названию/тегам</label>
+                        <input
+                            type="text"
+                            id="filter-search"
+                            class="filter-input"
+                            placeholder="Начните писать название ролика или тег..."
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Таблицы -->
+    <section class="tables-section">
+        <div class="container">
+            <div class="tables-grid">
+
+                <!-- 240p -->
+                 <button class="table-toggle" data-target="#table240">▶ Ролики 240p</button>
+
+<div id="table240" class="table-content">
+    <article class="table-card">
+        <div class="table-card-header">
+            <div class="table-title">Ролики 240p</div>
+            <div class="table-meta">ID отсортированы от меньшего к большему.</div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="videos-table" data-quality="240">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Категории / теги</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID013">013</td>
+    <td>{Плохое качество} УНИЧТОЖЕНИЕ БЛОГЕРА КЕЛЬ – [Стас Комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор, #Соболиный_Помёт" data-feat="">
+    <td class="col-id" data-id="#ID016">016</td>
+    <td>{Плохое качество} СПАСИТЕЛЬ НАВАЛЬНОГО – НИКОЛАЙ СОБОЛЕВ</td>
+    <td class="col-tags">#Стас_Комментатор, #Соболиный_Помёт</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Темур_Сидельников">
+    <td class="col-id" data-id="#ID019">019</td>
+    <td>{Плохое качество} Стас Комментатор и Тимур Сидельников разбирают Шоу -Окна-</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Темур_Сидельников</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID029">029</td>
+    <td>{Плохое качество} Ян Топлес — наука, секс, НОГИ _ ВПИСКА СО СТАСОМ</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID032">032</td>
+    <td>{Плохое качество} ШОКИРУЮЩЕЕ ПРИЗНАНИЕ О РОДСТВЕ С АЛИШЕРОМ – Стас, Поперечный и Моргенштерн беседуют</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID039">039</td>
+    <td>{Плохое качество} Подкаст Дажарахова_ СТАС И МИЛОХИН О РЕКЛАМЕ КОВИДА, УМЕ, ВОРОВСТВЕ И ТИК-ТОКЕ</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор, #Вперёд_ногами" data-feat="">
+    <td class="col-id" data-id="#ID041">041</td>
+    <td>{Плохое качество} Панама (Ян Топлес и Стас Ай Как Просто). Нога и Решка. 10 лет</td>
+    <td class="col-tags">#Стас_Комментатор, #Вперёд_ногами</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID059">059</td>
+    <td>{Плохое качество} СТАС ЗАПЛАКАЛ ПРЯМО НА СТРИМЕ ОТ ВОЙТЕНКО!</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2338">2338</td>
+    <td>МОРГЕНШТЕРН НА ВПИСКЕ ПРЕИСПОЛНИЛСЯ [стас - комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2339">2339</td>
+    <td>Аналитика на дне рюмки: смотрим Константина Сёмина | Часть 2</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2340">2340</td>
+    <td>Чужой против Хищников - [Стас комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Джек">
+    <td class="col-id" data-id="#ID2341">2341</td>
+    <td>ПЕЩЕРНЫЙ ЛИБЕРАЛ ЧУЖОЙ И ЕГО САМКА - [Стас комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Джек</td>
+</tr>
+
+<tr data-category="#Bosty_News" data-feat="">
+    <td class="col-id" data-id="#ID2342">2342</td>
+    <td>APPLE ПОД ЗАПРЕТОМ // СКАНДАЛ DISNEY // РАССТРЕЛЫ В ДАГЕСТАНЕ</td>
+    <td class="col-tags">#Bosty_News</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2343">2343</td>
+    <td>Смотрим конец 1 сезона фэнтези от Тармашева</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#ПО_FUCK_ТАМ" data-feat="">
+    <td class="col-id" data-id="#ID2344">2344</td>
+    <td>ЛИБЕРАЛЫ НАПАЛИ НА КАДЫРОВА, НО ИМ ПРИШЛОСЬ ИЗВИНЯТЬСЯ [стас - комментатор]</td>
+    <td class="col-tags">#ПО_FUCK_ТАМ</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2345">2345</td>
+    <td>Предсказания Добби о мятеже Пригожина - смотрим год спустя!</td>
+    <td class="col-tags">#Джек_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2346">2346</td>
+    <td>СВОЕГО ПЕРВОГО НЕМЦОВА ОН УБИЛ В 16 ЛЕТ [стас - комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2347">2347</td>
+    <td>ДАЖЕ ЛЯДОВ БЫ НЕ СНЯЛ ТАКОЕ [стас - комментатор] 2 ЧАСТЬ</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Стас">
+    <td class="col-id" data-id="#ID2348">2348</td>
+    <td>Шиза в ГЛУХОй обороне | Смотрим со Стасом интервью Глуховского</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Стас</td>
+</tr>
+
+<tr data-category="#ПО_FUCK_ТАМ" data-feat="">
+    <td class="col-id" data-id="#ID2349">2349</td>
+    <td>В лучах солнца МАНСКОГО – [по фактам]</td>
+    <td class="col-tags">#ПО_FUCK_ТАМ</td>
+</tr>
+
+<tr data-category="#ПО_FUCK_ТАМ" data-feat="">
+    <td class="col-id" data-id="#ID2351">2351</td>
+    <td>ЭЛЬФЫ С УКРАИНЫ ПОКАЗЫВАЮТ ОРКАМ ИЗ РОССИИ ИХ МЕСТО - [по фактам]</td>
+    <td class="col-tags">#ПО_FUCK_ТАМ</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2352">2352</td>
+    <td>Современная Немагия. Новый уровень - [Стас комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2353">2353</td>
+    <td>ВСЯ ПРАВДА О МЯТЕЖЕ ПРИГОЖИНА! - [Стас комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_woman">
+    <td class="col-id" data-id="#ID2354">2354</td>
+    <td>Сумасшедшая бабка с Эха Москвы | Реакт с Катей Кирбиревой</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_woman</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2357">2357</td>
+    <td>ВЫБИРАЕМ ЛУЧШУЮ ШЛ#ХУ - [Стас комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2358">2358</td>
+    <td>Жертва постсоветского воспитания о советском воспитании</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Ответы_на_вопросы" data-feat="">
+    <td class="col-id" data-id="#ID2359">2359</td>
+    <td>Переезжаю в Казань // СтопХам и Deadp 47 \\ Я через 10 лет - Ответы на вопросы</td>
+    <td class="col-tags">#Ответы_на_вопросы</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Джек">
+    <td class="col-id" data-id="#ID2360">2360</td>
+    <td>ЛЕБЕДЕВ ОПОЗОРИЛСЯ У ДУДЯ - [Стас политолох]</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Джек</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Джек">
+    <td class="col-id" data-id="#ID2362">2362</td>
+    <td>КРИНЖУЕМ С ЛЕБЕДЕВА У ДУДЯ - [Стас политолох]</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Джек</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Джек">
+    <td class="col-id" data-id="#ID2363">2363</td>
+    <td>ЛИБЕРАХИ БЫЛИ ПРАВЫ ВО ВСЁМ... - [Стас политолох]</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Джек</td>
+</tr>
+
+<tr data-category="#Научпох" data-feat="">
+    <td class="col-id" data-id="#ID2364">2364</td>
+    <td>КАК У РОССИИ ОТЖАЛИ АЛЯСКУ – [научпох #1]</td>
+    <td class="col-tags">#Научпох</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2365">2365</td>
+    <td>Смотрим Майснера у Камолова</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#ПО_FUCK_ТАМ" data-feat="">
+    <td class="col-id" data-id="#ID2366">2366</td>
+    <td>ПУТЧ ГКЧП: ЖУРНАЛИСТЫ РАЗВАЛИЛИ СОВЕТСКИЙ СОЮЗ?</td>
+    <td class="col-tags">#ПО_FUCK_ТАМ</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2427">2427</td>
+    <td>«БЕГЛЕЦЫ ИЗ СЕВЕРНОЙ КОРЕИ»: ШОКИРУЮЩАЯ ПРАВДА О ЖИЗНИ В ГУЛАГЕ</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2428">2428</td>
+    <td>ШУЛЬМАН ОШИЗЕЛА ОКОНЧАТЕЛЬНО - [стас политолог]</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2429">2429</td>
+    <td>ТЕПЕРЬ ШЛ*ХИ ЕЩЁ И БЕРЕМЕННЫЕ - [стас комментатор]</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2430">2430</td>
+    <td>МИНКУЛЬТ ЭКРАНИЗИРОВАЛ РУСЫ ПРОТИВ ЯЩЕРОВ - [икиностас #6]</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_woman">
+    <td class="col-id" data-id="#ID2431">2431</td>
+    <td>Разбираем фильм "Власть" про вице-президента США Дика Чейни</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_woman</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2432">2432</td>
+    <td>Смотрим легендарный фильм "Комната</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2433">2433</td>
+    <td>Разбираем китайский фильм "Герой"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_woman">
+    <td class="col-id" data-id="#ID2434">2434</td>
+    <td>ВАГИНОКАПИТАЛИСТКА УСТРОИЛА БЛАГОТВОРИТЕЛЬНОСТЬ | Смотрим сериал "Понять и простить"</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_woman</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2435">2435</td>
+    <td>Разбираем фильм "Криминальный город 2"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Ксюша, #Feat_Стас">
+    <td class="col-id" data-id="#ID2436">2436</td>
+    <td>Бухой реакт на женский сериал с женою Стаса</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Ксюша, #Feat_Стас</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2437">2437</td>
+    <td>МИНКУЛЬТУРНЫЙ ШЛЮХОВОЗ - [икиностас #7]</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2438">2438</td>
+    <td>ЛИБЕРАЛЫ ДУРЕЮТ С ЭТИХ ПРОГНОЗОВ - [стас политолог]</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2439">2439</td>
+    <td>КТО УБИЛ МАТЬ ЧИЧВАРКИНА? - [стас политолог]</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2440">2440</td>
+    <td>УКРАИНСКИЙ ШТЕФАНОВ ИЗ ТИКТОКА - [стас политолог]</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2441">2441</td>
+    <td>ЗЕЛЯ ПОБИРАЕТСЯ НА ПРОТЯЖЕНИИ ТРЁХ ЧАСОВ - [стас политолог]</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#ТЕХНОБЛОГ" data-feat="">
+    <td class="col-id" data-id="#ID2442">2442</td>
+    <td>ТУПО ЛУЧШАЯ ЧИТАЛКА - [ТЕХНОБЛОГ]</td>
+    <td class="col-tags">#ТЕХНОБЛОГ</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2443">2443</td>
+    <td>Смотрим угандийский боевик "Кто убил капитана Алекса?"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Bosty_News" data-feat="">
+    <td class="col-id" data-id="#ID2501">2501</td>
+    <td>Эстонский абордаж // Кремлёвский Дуров // Разговор Трампа и Путина</td>
+    <td class="col-tags">#Bosty_News</td>
+</tr>
+
+<tr data-category="#Metro" data-feat="">
+    <td class="col-id" data-id="#ID2575">2575</td>
+    <td>Диалог об алкоголе с Джеком Лондоном (МЕТРО)</td>
+    <td class="col-tags">#Metro</td>
+</tr>
+
+<tr data-category="#Metro" data-feat="">
+    <td class="col-id" data-id="#ID2582">2582</td>
+    <td>Был ли Теодор Драйзер социалистом? (МЕТРО)</td>
+    <td class="col-tags">#Metro</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2476">2476</td>
+    <td>КАХА 3: ПРИКЛЮЧЕНИЯ В БРЕМЕНЕ НА НАШИ ДЕНЬГИ</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2482">2482</td>
+    <td>ФИНИСТ: РУССКИЙ ВЕДЬМАК за 1 200 000 000 руб</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2509">2509</td>
+    <td>"БРАТ 3" С ПЕТРОВЫМ</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2541">2541</td>
+    <td>ЖДУН: АЛЬФ ДЛЯ НИЩИХ</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2552">2552</td>
+    <td>КАЛОГРИВЫЙ И ТАЙНА ЗАКЛАДОК</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2555">2555</td>
+    <td>Кракен №8 — Петров против Дейви Джонса</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2560">2560</td>
+    <td>Ампир V: визуальный гламур, смысловой вакуум</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#ikinostas" data-feat="">
+    <td class="col-id" data-id="#ID2585">2585</td>
+    <td>Бекмамбетов и Война Реклам: Пришельцы Сосут Wi-Fi</td>
+    <td class="col-tags">#ikinostas</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2449">2449</td>
+    <td>Вареник для зека | Смотрим шоу «Ждули»</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2452">2452</td>
+    <td>Новый удар по буржуазным обоям! Смотрю разбор "Один дома 2" от Культпросвета</td>
+    <td class="col-tags">#Джек_Комментатор</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2460">2460</td>
+    <td>Реактим сумасшедшего попа, пошедшего войной на квадроберов</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2464">2464</td>
+    <td>Смотрим труЪ-марксистский разбор фильма "Иди и смотри" от Культпросвета</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2475">2475</td>
+    <td>Угораем с забористой клюквы с Рэбом Брауном</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Стас">
+    <td class="col-id" data-id="#ID2479">2479</td>
+    <td>Смотрим шоу про тарологов вместе со Стасом</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Стас</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2485">2485</td>
+    <td>Спасаемся от полтергейстов вместе с православным экзорцистом</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2486">2486</td>
+    <td>Как вербовалась Тварь</td>
+    <td class="col-tags">#Джек_Комментатор</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2487">2487</td>
+    <td>Бомблю с "марксистского анализа" мультфильма "Король Лев"</td>
+    <td class="col-tags">#Джек_Комментатор</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe, #Feat_Neeby_kto_eto">
+    <td class="col-id" data-id="#ID2499">2499</td>
+    <td>Тройной реакт на Вербованную Тварь</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe, #Feat_Neeby_kto_eto</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2510">2510</td>
+    <td>Реактим шоу про жиробасов</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2517">2517</td>
+    <td>Смотрим обзор инцела на "Красавицу и чудовище"</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2521">2521</td>
+    <td>Добби рассказывает про отношения! Реактим и кринжуем</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2525">2525</td>
+    <td>Добби рассказывает про отношения! Реактим и кринжуем | Часть 2</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2531">2531</td>
+    <td>Реакт на главного левого фрика | Часть 1</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2533">2533</td>
+    <td>Реакт на главного левого фрика | Часть 2</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2537">2537</td>
+    <td>Валерийские обои Вестероса</td>
+    <td class="col-tags">#Джек_Комментатор</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman, #Feat_Random">
+    <td class="col-id" data-id="#ID2550">2550</td>
+    <td>Реактим кривозубого крестьянина с барскими замашками</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman, #Feat_Random</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Стас">
+    <td class="col-id" data-id="#ID2556">2556</td>
+    <td>Реакт на новый фильм Александра Невского (Курицина)</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Стас</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2558">2558</td>
+    <td>Реактим Маркаряна вместе с еврейской фемкой</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2563">2563</td>
+    <td>Реактим шоу "Маменькин сынок"</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2564">2564</td>
+    <td>Как стример пришёл к гадалке | Реакт с Lera Himera</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2567">2567</td>
+    <td>Смотрим правацкий обзор фильма "Носферату"</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2581">2581</td>
+    <td>Реактим 1 серию "Винкс"</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2583">2583</td>
+    <td>Реактим накуканивание Романа Антоновского Стасом Ай Как Просто</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Контентология" data-feat="">
+    <td class="col-id" data-id="#ID2535">2535</td>
+    <td>ИЗ АЛЬФЫ В КУКОЛДА: ИСТОРИЯ IDubbbz</td>
+    <td class="col-tags">#Контентология</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2444">2444</td>
+    <td>Разбираем фильм "Ворон" (1994)</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2453">2453</td>
+    <td>Смотрим нового "Ворона" (2024)</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="">
+    <td class="col-id" data-id="#ID2455">2455</td>
+    <td>Смотрю интервью какого-то колхозника в гостях у Папича</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2461">2461</td>
+    <td>Разбираем фильм "Криминальный город 3"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2473">2473</td>
+    <td>Разбираем фильм "Криминальный город 4"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2474">2474</td>
+    <td>Фэнтези с худшими актёрами в истории | Новая серия Тармашева</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2491">2491</td>
+    <td>Разбираем фильм "Анора"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2493">2493</td>
+    <td>Реакт на SJW-боевик "Большая двадцатка"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2494">2494</td>
+    <td>Разбираем ремейк фильма "Носферату"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe, #Feat_Woman">
+    <td class="col-id" data-id="#ID2507">2507</td>
+    <td>Разбираем фильм "Побег из Нью-Йорка"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2520">2520</td>
+    <td>Разбираем фильм "Поцелуй вампира"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2528">2528</td>
+    <td>Разбираем фильм "Побег из Лос-Анджелеса"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Joe, #Feat_WomanX2">
+    <td class="col-id" data-id="#ID2542">2542</td>
+    <td>Сисько-реакт на русскую фэнтезю</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Joe, #Feat_WomanX2</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Мостов">
+    <td class="col-id" data-id="#ID257">257</td>
+    <td>Шихман в гостях на псарне Зеленского</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Мостов</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2445">2445</td>
+    <td>ГЛАВНЫЙ ШИЗ КРЕМЛЯ</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2446">2446</td>
+    <td>КАЦ ПРЕЗИРАЕТ ИНВАЛИДОВ</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2448">2448</td>
+    <td>Безработный Диктатор ФБК</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2450">2450</td>
+    <td>Фонд борьбы с определённой коррупцией ЧАСТЬ 2</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2451">2451</td>
+    <td>ЛОШАДИНАЯ ДОЗА КРИНЖА!</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2456">2456</td>
+    <td>Украинский Штефанов продолжает отжигать</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2457">2457</td>
+    <td>Еб*л ваш СССР</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2458">2458</td>
+    <td>КТО ВЕРБУЕТ РОССИЯН?</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Разбор_Фильма" data-feat="">
+    <td class="col-id" data-id="#ID2465">2465</td>
+    <td>КРЭЙВЕН: ЧЕЛОВЕК–ГУЛАГ!</td>
+    <td class="col-tags">#Разбор_Фильма</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2466">2466</td>
+    <td>Мини-Мани мирок Шефцова</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2470">2470</td>
+    <td>Что? Где? Когда Аскеров ебнулся?</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2478">2478</td>
+    <td>ПРОШУ ПРОЩЕНИЯ У ПОРЕБРИКА</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2480">2480</td>
+    <td>ПИШУ ПУБЛИЧНЫЙ ДОНОС НА МАКСИМА КАЦА</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2481">2481</td>
+    <td>Нарколыгин поясняет за митинский радар</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2483">2483</td>
+    <td>Вы не поверите… но Дудь взял интервью у ГИТЛЕРА…</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2484">2484</td>
+    <td>ШЛЮХМАН РАЗОБЛАЧАЕТ МИФЫ ПУТИНА</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Разбор_какой_то_Онлифанщицы" data-feat="">
+    <td class="col-id" data-id="#ID2488">2488</td>
+    <td>СТАЛ ПАПИКОМ BELLE DELPHINE</td>
+    <td class="col-tags">#Разбор_какой_то_Онлифанщицы</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2489">2489</td>
+    <td>СВИНЬЯ С ФБК СТАЛКЕРИТ ЕКАТЕРИНУ АНДРЕЕВУ</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2490">2490</td>
+    <td>СНОВА ПЕРЕФОРС ОТ КАЦА</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Штребунал" data-feat="#Feat_Жмиль">
+    <td class="col-id" data-id="#ID2492">2492</td>
+    <td>Как ШтрЭбух жижу Жмилю втирал</td>
+    <td class="col-tags">#Штребунал, #Feat_Жмиль</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2495">2495</td>
+    <td>РАСКУЛАЧИВАЕМ ЛЮДЕЙ ИКС</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2496">2496</td>
+    <td>ЛАРИН ОКОНЧАТЕЛЬНО СТОРЧАЛСЯ</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2497">2497</td>
+    <td>Самый е*нутый депутат БАНДЕРенко</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2498">2498</td>
+    <td>ТИПУТИНСКИЕ ИСТОРИИ ОТ ̶К̶А̶Ц̶А̶ ШИЗА</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2500">2500</td>
+    <td>РЭПЕР УМНЕЕ ОКСИМИРОНА - OG BUDA</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2502">2502</td>
+    <td>Дядя Джек и Стас Комментатор ПРОТИВ ЛЯДОВА!</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2503">2503</td>
+    <td>РУССКИЕ ПРЕДАТЕЛИ УКРАИНЫ - ШАРИЙ И ПАНЧЕНКО</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#ПО_FUCK_ТАМ" data-feat="">
+    <td class="col-id" data-id="#ID2504">2504</td>
+    <td>Что смотрят в КНДР? Разбор северокорейской пропаганды</td>
+    <td class="col-tags">#ПО_FUCK_ТАМ</td>
+</tr>
+
+<tr data-category="#Стас_Бомбит" data-feat="">
+    <td class="col-id" data-id="#ID2505">2505</td>
+    <td>ГНЕВ ЧЕЛОВЕЧЕСКИЙ ИЛИ ПОЧЕМУ YANDEX КОНТОРА П*ИДОРАСОВ</td>
+    <td class="col-tags">#Стас_Бомбит</td>
+</tr>
+
+<tr data-category="#Стас_Киносмотр" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2506">2506</td>
+    <td>Микки-Убийца</td>
+    <td class="col-tags">#Стас_Киносмотр, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2508">2508</td>
+    <td>Путин срал в бункере – подлинная биография Диктатора!</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2511">2511</td>
+    <td>ЭСКОРТ УСЛУГИ ЛЯДОВА</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2512">2512</td>
+    <td>КАЦ СМАКУЕТ ТЕРАКТЫ</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Киносмотр" data-feat="#Feat_Sorabi, #Feat_Ксюша">
+    <td class="col-id" data-id="#ID2513">2513</td>
+    <td>Эротический дебют минкульта</td>
+    <td class="col-tags">#Стас_Киносмотр, #Feat_Sorabi, #Feat_Ксюша</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2514">2514</td>
+    <td>ЗАЩЕКАНЕЦ НАЕХАЛ НА КИСЕЛЕВА!!!</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2515">2515</td>
+    <td>Учимся пизд*ть мать по Гобзавру</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Швец</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2516">2516</td>
+    <td>УНИЧТОЖАЕМ НОВОГО ТИКТОК-КЛОУНА (с хирургической точностью)</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="#Стас_Киносмотр">
+    <td class="col-id" data-id="#ID2518">2518</td>
+    <td>ВЕНЕДИКТОВ НАЗВАЛ УБИЙЦ НАВАЛЬНОГО!</td>
+    <td class="col-tags">#Стас_Политолох, #Стас_Киносмотр</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2519">2519</td>
+    <td>ПОЛИНА ВЛЮБИЛАСЬ В ГОГУНСКОГО (Стас тоже)</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2522">2522</td>
+    <td>НЕМЦОВ - ПРЕЗИДЕНТ МЕЧТЫ</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2523">2523</td>
+    <td>Из рашиста в героя! - разбор лжи о мятеже Пригожина!</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_grpzdc">
+    <td class="col-id" data-id="#ID2524">2524</td>
+    <td>Психопортрет Путина: Педофил и гей в отрицании</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_grpzdc</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2526">2526</td>
+    <td>Кац предлагает воевать до талого!</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2527">2527</td>
+    <td>Стас выбирает себе трапика!</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Подкаст" data-feat="">
+    <td class="col-id" data-id="#ID2529">2529</td>
+    <td>Готов за деньги на всё? Как Сергей Симонов ушёл в нижний интернет</td>
+    <td class="col-tags">#Подкаст</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2530">2530</td>
+    <td>MAXимальная жижа Ютуба</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2532">2532</td>
+    <td>Русофоб и нацист кормит этодругином</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#ПО_FUCK_ТАМ" data-feat="">
+    <td class="col-id" data-id="#ID2536">2536</td>
+    <td>Невыносимое — выносимо? Раскрыта правда о Мавзолее Ленина</td>
+    <td class="col-tags">#ПО_FUCK_ТАМ</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2538">2538</td>
+    <td>Самый тупой русофоб интернета</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2454">2454</td>
+    <td>ПСИХОПАТ НА ПРИЕМЕ У ШИЗА</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_CMH">
+    <td class="col-id" data-id="#ID2459">2459</td>
+    <td>ЧОКНУТЫЙ ПРИШЕЛЕЦ!!</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_CMH</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2462">2462</td>
+    <td>По-быстрому с Полиной</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_CMH">
+    <td class="col-id" data-id="#ID2463">2463</td>
+    <td>ЛУЧШЕ С ЛЯДОВЫМ ЗА ВСЕ ГОДЫ</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_CMH</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Джек">
+    <td class="col-id" data-id="#ID2471">2471</td>
+    <td>Новое шоу «Окна» с Ютуба</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Джек</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2472">2472</td>
+    <td>Через тернии к гвоздям</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2477">2477</td>
+    <td>Главная проблема феминизма</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2480">2480</td>
+    <td>ПИШУ ПУБЛИЧНЫЙ ДОНОС НА МАКСИМА КАЦА</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2483">2483</td>
+    <td>Вы не поверите… но Дудь взял интервью у ГИТЛЕРА…</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2487">2487</td>
+    <td>Бомблю с "марксистского анализа" мультфильма "Король Лев"</td>
+    <td class="col-tags">#Джек_Комментатор</td>
+</tr>
+
+<tr data-category="#Разбор_какой_то_Онлифанщицы" data-feat="">
+    <td class="col-id" data-id="#ID2488">2488</td>
+    <td>СТАЛ ПАПИКОМ BELLE DELPHINE</td>
+    <td class="col-tags">#Разбор_какой_то_Онлифанщицы</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2496">2496</td>
+    <td>ЛАРИН ОКОНЧАТЕЛЬНО СТОРЧАЛСЯ</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2497">2497</td>
+    <td>Самый е*нутый депутат БАНДЕРенко</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2498">2498</td>
+    <td>ТИПУТИНСКИЕ ИСТОРИИ ОТ КАЦА</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="">
+    <td class="col-id" data-id="#ID2507">2507</td>
+    <td>Разбираем фильм "Побег из Нью-Йорка"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2510">2510</td>
+    <td>Реактим шоу про жиробасов</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2511">2511</td>
+    <td>ЭСКОРТ УСЛУГИ ЛЯДОВА</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Стас_Киносмотр" data-feat="">
+    <td class="col-id" data-id="#ID2513">2513</td>
+    <td>Эротический дебют минкульта</td>
+    <td class="col-tags">#Стас_Киносмотр</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2514">2514</td>
+    <td>ЗАЩЕКАНЕЦ НАЕХАЛ НА КИСЕЛЕВА!!!</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Швец">
+    <td class="col-id" data-id="#ID2515">2515</td>
+    <td>Учимся пизд*ть мать по Гобзавру</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Швец</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2516">2516</td>
+    <td>УНИЧТОЖАЕМ НОВОГО ТИКТОК-КЛОУНА</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="#Стас_Киносмотр">
+    <td class="col-id" data-id="#ID2518">2518</td>
+    <td>ВЕНЕДИКТОВ НАЗВАЛ УБИЙЦ НАВАЛЬНОГО!</td>
+    <td class="col-tags">#Стас_Политолох, #Стас_Киносмотр</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2520">2520</td>
+    <td>Разбираем фильм "Поцелуй вампира"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2521">2521</td>
+    <td>Добби рассказывает про отношения! Реактим и кринжуем</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_grpzdc">
+    <td class="col-id" data-id="#ID2524">2524</td>
+    <td>Психопортрет Путина: Педофил и гей в отрицании</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_grpzdc</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2525">2525</td>
+    <td>Добби рассказывает про отношения! Реактим и кринжуем | Часть 2</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2526">2526</td>
+    <td>Кац предлагает воевать до талого!</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2527">2527</td>
+    <td>Стас выбирает себе трапика!</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Обзоры_С_Бусти_Джека" data-feat="#Feat_Woman, #Feat_Joe">
+    <td class="col-id" data-id="#ID2528">2528</td>
+    <td>Разбираем фильм "Побег из Лос-Анджелеса"</td>
+    <td class="col-tags">#Обзоры_С_Бусти_Джека, #Feat_Woman, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2530">2530</td>
+    <td>MAXимальная жижа Ютуба</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2531">2531</td>
+    <td>Реакт на главного левого фрика | Часть 1</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Стас_Политолох" data-feat="">
+    <td class="col-id" data-id="#ID2532">2532</td>
+    <td>Русофоб и нацист кормит этодругином</td>
+    <td class="col-tags">#Стас_Политолох</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="#Feat_Woman">
+    <td class="col-id" data-id="#ID2533">2533</td>
+    <td>Реакт на главного левого фрика | Часть 2</td>
+    <td class="col-tags">#Джек_Комментатор, #Feat_Woman</td>
+</tr>
+
+<tr data-category="#Джек_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2537">2537</td>
+    <td>Валерийские обои Вестероса</td>
+    <td class="col-tags">#Джек_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2544">2544</td>
+    <td>ОНА АБЬЮЗИЛА МУЖА 10 ЛЕТ!</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Джек">
+    <td class="col-id" data-id="#ID2545">2545</td>
+    <td>Путинистка узнала, что мир не черно-белый и переобулась!</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Джек</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_TrapSlonyra">
+    <td class="col-id" data-id="#ID2553">2553</td>
+    <td>Ящер Штефанов против Руса Шамана</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_TrapSlonyra</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Sorabi">
+    <td class="col-id" data-id="#ID2559">2559</td>
+    <td>Тяжёлые весы Слевина: Лисян против Гелика!</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Sorabi</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Joe">
+    <td class="col-id" data-id="#ID2562">2562</td>
+    <td>Лысый параноик в КНДР</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Joe</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2565">2565</td>
+    <td>Тайная Фанатка МАCАНА: БОСС МАЙОНЕЗА АТАКУЕТ!</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="#Feat_Ксюша">
+    <td class="col-id" data-id="#ID2571">2571</td>
+    <td>Сыночка-корзиночка пашет на мамку</td>
+    <td class="col-tags">#Стас_Комментатор, #Feat_Ксюша</td>
+</tr>
+
+<tr data-category="#Стас_Комментатор" data-feat="">
+    <td class="col-id" data-id="#ID2578">2578</td>
+    <td>Позорный конец шоу «ЧБД» и Сабурова!</td>
+    <td class="col-tags">#Стас_Комментатор</td>
+</tr>
+                            </tbody>
+            </table>
+        </div>
+    </article>
+</div>
+
+<button class="table-toggle" data-target="#table1080">▶ Ролики 1080p</button>
+
+<div id="table1080" class="table-content">
+    <article class="table-card">
+        <div class="table-card-header">
+            <div class="table-title">Ролики 1080p</div>
+            <div class="table-meta">1080p находятся в обработке.</div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="videos-table" data-quality="1080">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Категории / теги</th>
+                    </tr>
+                </thead>
+                <tbody>
+                            <!-- пока пусто -->
+                            </tbody>
+            </table>
+        </div>
+    </article>
+</div>
+    </section>
+
+    <!-- Низ страницы -->
+    <footer class="footer">
+        <div class="container" style="text-align: center;">
+            <a href="index.html" class="back-btn">
+                <span>←</span>
+                Назад на главную
+            </a>
+        </div>
+    </footer>
+</div>
+
+<!-- ЛОГИКА ФИЛЬТРОВ + КОПИРОВАНИЕ ID -->
+<script>
+    (function () {
+        const categorySelect = document.getElementById("filter-category");
+        const featSelect = document.getElementById("filter-feat");
+        const searchInput = document.getElementById("filter-search");
+        const resetBtn = document.getElementById("filters-reset");
+        const statusEl = document.getElementById("copy-status");
+        const rows = document.querySelectorAll(".videos-table tbody tr");
+        let copyTimeoutId = null;
+
+        function applyFilters() {
+            const selectedCategory = categorySelect.value;
+            const selectedFeat = featSelect.value;
+            const search = searchInput.value.trim().toLowerCase();
+
+            rows.forEach((row) => {
+                const rowCategories = (row.dataset.category || "")
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean);
+
+                const rowFeats = (row.dataset.feat || "")
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean);
+
+                const textForSearch =
+                    (row.cells[1].textContent + " " + row.cells[2].textContent)
+                        .toLowerCase();
+
+                const matchCategory =
+                    selectedCategory === "all" ||
+                    rowCategories.includes(selectedCategory);
+
+                const matchFeat =
+                    selectedFeat === "all" ||
+                    rowFeats.includes(selectedFeat);
+
+                const matchSearch =
+                    search === "" || textForSearch.includes(search);
+
+                row.style.display =
+                    matchCategory && matchFeat && matchSearch ? "" : "none";
+            });
+        }
+
+        function legacyCopy(id) {
+            const textarea = document.createElement("textarea");
+            textarea.value = id;
+            textarea.style.position = "fixed";
+            textarea.style.left = "-9999px";
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand("copy");
+            } catch (e) {}
+            document.body.removeChild(textarea);
+        }
+
+        function showStatus(id) {
+            if (!statusEl) return;
+            statusEl.textContent = `ID ${id} скопирован в буфер обмена`;
+            statusEl.classList.add("highlight");
+            if (copyTimeoutId) {
+                clearTimeout(copyTimeoutId);
+            }
+            copyTimeoutId = setTimeout(() => {
+                statusEl.classList.remove("highlight");
+            }, 2000);
+        }
+
+        function copyId(id) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard
+                    .writeText(id)
+                    .then(() => showStatus(id))
+                    .catch(() => {
+                        legacyCopy(id);
+                        showStatus(id);
+                    });
+            } else {
+                legacyCopy(id);
+                showStatus(id);
+            }
+        }
+
+        // обработчики фильтров
+        categorySelect.addEventListener("change", applyFilters);
+        featSelect.addEventListener("change", applyFilters);
+        searchInput.addEventListener("input", applyFilters);
+        resetBtn.addEventListener("click", () => {
+            categorySelect.value = "all";
+            featSelect.value = "all";
+            searchInput.value = "";
+            applyFilters();
+        });
+
+        // обработчики клика по ID
+        const idCells = document.querySelectorAll(".col-id");
+        idCells.forEach((cell) => {
+            cell.addEventListener("click", () => {
+                const id = cell.dataset.id || cell.textContent.trim();
+                copyId(id);
+            });
+        });
+
+        // начальная отрисовка
+        applyFilters();
+    })();
+    document.querySelectorAll(".table-toggle").forEach(btn => {
+    btn.addEventListener("click", () => {
+        const block = document.querySelector(btn.dataset.target);
+
+        const isOpen = block.classList.contains("open");
+
+        if (isOpen) {
+            block.classList.remove("open");
+            btn.classList.remove("open");
+            btn.innerHTML = "▶ " + btn.textContent.replace("▼ ", "");
+        } else {
+            block.classList.add("open");
+            btn.classList.add("open");
+            btn.innerHTML = "▼ " + btn.textContent.replace("▶ ", "");
+        }
+    });
+});
+
+</script>
 </body>
 </html>
