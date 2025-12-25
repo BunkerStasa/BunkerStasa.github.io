@@ -56,8 +56,18 @@
   </head>
 
   <body>
-    <video src="media/bg.mp4" class="bg-video" id="bg-video_1" muted autoplay loop></video>
-    <video src="media/bg_new.mp4" class="bg-video hidden" id="bg-video_2" preload="auto"></video>
+    <video class="bg-video" id="bg-video_1" muted autoplay loop>
+      <source src="media/bg.webm" type="video/webm">
+      <source src="media/bg.mp4" type="video/mp4">
+      Ваш браузер не поддерживает видео.
+    </video>
+    
+    <video class="bg-video hidden" id="bg-video_2" preload="auto">
+      <source src="media/bg_new.webm" type="video/webm">
+      <source src="media/bg_new.mp4" type="video/mp4">
+      Ваш браузер не поддерживает видео.
+    </video>
+    
     <main class="main STENGAZETA">
       <div class="timer">
         <div id="timer" class="">
@@ -154,6 +164,7 @@
     
   </body>
 </html>
+
 
 
 
