@@ -70,20 +70,19 @@
     
     <main class="main STENGAZETA">
       <div class="timer">
-        <div id="timer" class="hidden">
+        <div id="timer" class="">
           <p>Прошло времени с последнего бана</p>
           <p id="countdown"></p>
         </div>
 
-        <div id="isBanned" class="">
+        <div id="isBanned" class="hidden">
           <video id="banned_video" src="media/video2.mp4" muted autoplay loop></video>
         </div>
       </div>
 
-      <div class="info hidden">
+      <div class="info">
         <h1 class="">АКТУАЛЬНАЯ ССЫЛКА НА БУНКЕР СТАСА</h1>
         <a class="bunker_link" referrerpolicy="no-referrer" href="">БУНКЕР СТАСА</a>
-        <a class="bunker_link hidden" referrerpolicy="no-referrer" href="https://t.me/denandhisfriends">ЩИТПОСТ</a>
         <div class="type_links">
           <a referrerpolicy="no-referrer" class="hidden" href="">MP3</a>
           <a referrerpolicy="no-referrer" class="" href="">240p</a>
@@ -111,7 +110,7 @@
       }
 
       // Меняемм только эту строку при новом старте:
-      const START_ISO_MOSCOW = "2026-03-24T12:00:00+00:00";
+      const START_ISO_MOSCOW = "2026-03-30T00:00:00+00:00";
 
       // Преобразуем в миллисекунды UTC — далее расчёт станет независимым от пояса пользователя
       const startUTC = Date.parse(START_ISO_MOSCOW); // число миллисекунд с 1970-01-01T00:00:00Z
