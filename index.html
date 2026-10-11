@@ -71,7 +71,7 @@
     <main class="main STENGAZETA">
       <div class="timer">
         <div id="timer" class="">
-          <p>Прошло времени с последнего бана</p>
+          <p>Прошло времени с начала запоя админа</p>
           <p id="countdown"></p>
         </div>
 
@@ -110,7 +110,7 @@
       }
 
       // Меняемм только эту строку при новом старте:
-      const START_ISO_MOSCOW = "2026-03-30T00:00:00+00:00";
+      const START_ISO_MOSCOW = "2026-07-27T00:00:00+00:00"; // "2026-03-30T00:00:00+00:00"; last ban time
 
       // Преобразуем в миллисекунды UTC — далее расчёт станет независимым от пояса пользователя
       const startUTC = Date.parse(START_ISO_MOSCOW); // число миллисекунд с 1970-01-01T00:00:00Z
